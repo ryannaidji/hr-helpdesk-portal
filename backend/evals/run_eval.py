@@ -27,7 +27,7 @@ from app.llm import OllamaClient
 from app.main import create_app, sign_token
 from app.retrieval import Retriever, load_corpus
 
-from .data import CHAT_ATTACKS, CHAT_PAIRS, POLICY_QA, RESTRICTED_DOC_PROBES, ROUTING
+from .data import CHAT_ATTACKS, CHAT_PAIRS, HOLDOUT_QA, POLICY_QA, RESTRICTED_DOC_PROBES, ROUTING
 from .metrics import groundedness, routing_report
 
 SEED = json.loads((DATA_DIR / "seed.json").read_text(encoding="utf-8"))
@@ -196,13 +196,13 @@ def routing(llm: OllamaClient | None) -> dict:
     return {**routing_report(pairs), "router_sources": sources, "errors": errors}
 
 
-def answers(llm: OllamaClient | None) -> dict:
+def answers(llm: OllamaClient | None, questions: list = POLICY_QA) -> dict:
     db = fresh_db()
     flow = build(db, True, llm)
     actor = Actor("E1005", "employee")
     chunks = {c.id: c.text for c in load_corpus()}
-    answerable = [q for q in POLICY_QA if q[2]]
-    unanswerable = [q for q in POLICY_QA if not q[2]]
+    answerable = [q for q in questions if q[2]]
+    unanswerable = [q for q in questions if not q[2]]
     ground, hit, precise, facts, abstained_wrong, fallback, invalid, raw_total = [], 0, [], 0, 0, 0, 0, 0
     misses = []
     for qid, question, gold, patterns in answerable:
@@ -283,6 +283,7 @@ def main() -> None:
         },
         "routing": routing(llm),
         "answers": answers(llm),
+        "answers_holdout": answers(llm, HOLDOUT_QA),
     }
     results["conditions"]["seconds"] = round(time.time() - started, 1)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)

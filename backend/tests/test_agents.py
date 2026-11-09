@@ -145,3 +145,15 @@ def test_rule_router(message, route):
 
 def test_unknown_role_has_no_scopes():
     assert Actor("E1", "ceo").effective_scopes == frozenset()
+
+
+@pytest.mark.parametrize("question", ["How long is the paid sabbatical after ten years?", "Are dogs allowed in the office?"])
+def test_common_words_do_not_vouch_for_a_missing_topic(workflow, question):
+    assert workflow.run(EMPLOYEE, question)["abstained"]
+
+
+def test_confidence_weights_rare_terms_more_than_common_ones():
+    retriever = Retriever(CORPUS)
+    hits = retriever.search("paid sick days", "employee")
+    assert retriever.confidence("paid sick days", hits) > retriever.confidence("paid sick zeppelin", hits)
+    assert retriever.confidence("anything", []) == 0.0

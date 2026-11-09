@@ -17,7 +17,7 @@ STOPWORDS = set(
 )
 AUDIENCE_RANK = {"all": 0, "manager": 1, "hr": 2}
 ROLE_RANK = {"employee": 0, "manager": 1, "hr": 2}
-MIN_CONFIDENCE = 0.5
+MIN_CONFIDENCE = 0.6  # chosen on the dev set only; see README
 
 
 @dataclass(frozen=True)
@@ -98,10 +98,18 @@ class Retriever:
         scored.sort(key=lambda item: -item[0])
         return [Retrieved(self.corpus[i], score) for score, i in scored[:k]]
 
+    def _idf(self, term: str) -> float:
+        total = len(self.corpus)
+        return math.log(1 + (total - self.df[term] + 0.5) / (self.df[term] + 0.5))
+
     def confidence(self, query: str, hits: list[Retrieved]) -> float:
-        """Share of the question's content words found in the retrieved text. Used to abstain."""
+        """IDF-weighted share of the question's content words found in the retrieved text. Used to abstain.
+
+        Weighting by rarity stops common words ("paid", "days", "year") from vouching for a question
+        whose distinctive word ("sabbatical", "jury") appears nowhere in the retrieved policy text.
+        """
         terms = set(tokens(query))
         if not terms or not hits:
             return 0.0
         found = set().union(*(set(tokens(f"{h.chunk.title} {h.chunk.section} {h.chunk.text}")) for h in hits))
-        return len(terms & found) / len(terms)
+        return sum(self._idf(t) for t in terms & found) / sum(self._idf(t) for t in terms)
