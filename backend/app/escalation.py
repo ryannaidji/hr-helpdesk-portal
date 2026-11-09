@@ -13,7 +13,7 @@ WATCH_AT = 25
 INFORMATIONAL_DAMPING = 0.4
 
 SIGNALS: list[tuple[str, int, str]] = [
-    ("safety_threat", 75, r"\b(kill myself|suicid\w*|self[- ]harm|hurt myself|threaten\w* to (?:hurt|kill)|"
+    ("safety_threat", 75, r"\b(kill myself|suicid\w*|self[- ]harm|hurt(?:ing)? myself|threaten\w* to (?:hurt|kill)|"
                           r"threat\w* of violence|physically (?:attacked|assaulted)|assault\w*|has a weapon)\b"),
     ("harassment_discrimination", 60, r"\b(harass\w*|discriminat\w*|sexual\w* (?:comments?|advances?)|groped|"
                                       r"racist|sexist|bull(?:y|ied|ying))\b"),

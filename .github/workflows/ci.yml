@@ -20,3 +20,52 @@ jobs:
       - run: pip install -r requirements.txt
       - run: ruff check .
       - run: pytest -q
+      - name: Authorization and baseline eval gate (no LLM)
+        run: python -m evals.run_eval --mode rules --out /tmp/rules.json --thresholds evals/thresholds.json
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  screenshot:
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: pip install -r backend/requirements.txt
+      - run: npm ci && npm run build && npx playwright install --with-deps chromium
+        working-directory: frontend
+      - name: Start the portal (rules mode, synthetic data)
+        working-directory: backend
+        env:
+          HR_STATIC_DIR: ../frontend/dist
+          HR_TOKEN_SECRET: ci-only
+        run: |
+          (python -m uvicorn app.asgi:app --port 8000 > /tmp/api.log 2>&1 &)
+          for i in $(seq 1 30); do curl -s localhost:8000/health && break; sleep 1; done
+      - run: node e2e/screenshot.mjs ../docs/demo.png
+        working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-screenshot
+          path: docs/demo.png
