@@ -1,0 +1,23 @@
+:root { font-family: system-ui, sans-serif; color: #1c2430; background: #f4f6f9; }
+body { margin: 0; }
+.shell { max-width: 960px; margin: 0 auto; padding: 16px; }
+header, .row { display: flex; gap: 12px; align-items: center; }
+.spacer { flex: 1; }
+nav { display: flex; gap: 4px; flex-wrap: wrap; margin: 12px 0; }
+button { padding: 6px 12px; border: 1px solid #b8c2cf; border-radius: 6px; background: #fff; cursor: pointer; }
+button.active, button[type="submit"] { background: #1f5fa8; color: #fff; }
+.card { background: #fff; border: 1px solid #dde3ea; border-radius: 8px; padding: 12px; margin: 8px 0; }
+.login { max-width: 360px; margin: 64px auto; display: grid; gap: 12px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; align-items: end; }
+label { display: grid; gap: 4px; font-size: 14px; }
+input, select { padding: 6px; border: 1px solid #b8c2cf; border-radius: 6px; }
+.row input { flex: 1; }
+.tag, .meta { color: #5a6675; font-size: 13px; }
+.meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.question { font-weight: 600; }
+.badge { padding: 1px 8px; border-radius: 10px; background: #e3edf8; }
+.badge.escalate, .badge.denied { background: #fbe3e3; color: #8c1d1d; }
+.error { color: #a32020; }
+table { width: 100%; border-collapse: collapse; background: #fff; font-size: 14px; }
+th, td { text-align: left; padding: 6px; border-bottom: 1px solid #e6ebf1; }
+tr.deny { background: #fdf0f0; }
