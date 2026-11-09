@@ -17,7 +17,7 @@ STOPWORDS = set(
 )
 AUDIENCE_RANK = {"all": 0, "manager": 1, "hr": 2}
 ROLE_RANK = {"employee": 0, "manager": 1, "hr": 2}
-MIN_CONFIDENCE = 0.6  # chosen on the dev set only; see README
+MIN_CONFIDENCE = 0.5  # BM25 mode only. Lexical overlap cannot judge paraphrases, so embedding mode does not use it.
 
 
 @dataclass(frozen=True)
@@ -67,22 +67,32 @@ class Retriever:
         self.corpus = corpus
         self.embed = embed
         self.doc_tokens = [tokens(f"{c.title} {c.section} {c.text}") for c in corpus]
-        self.df = Counter(t for doc in self.doc_tokens for t in set(doc))
-        self.avg_len = sum(map(len, self.doc_tokens)) / len(self.doc_tokens)
+        self._stats: dict[str, tuple[Counter, int, float]] = {}
         self.matrix = None
         if embed:
             vectors = np.array(embed([f"{c.title}: {c.section}. {c.text}" for c in corpus]), dtype=float)
             self.matrix = vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
 
-    def _bm25(self, query: list[str], index: int, k1: float = 1.5, b: float = 0.75) -> float:
+    @property
+    def uses_embeddings(self) -> bool:
+        return self.matrix is not None
+
+    def _role_stats(self, role: str) -> tuple[Counter, int, float]:
+        """Corpus statistics over only what this role may read, so restricted text cannot influence a score."""
+        if role not in self._stats:
+            docs = [d for d, c in zip(self.doc_tokens, self.corpus, strict=True) if visible_to(role, c)]
+            self._stats[role] = (Counter(t for d in docs for t in set(d)), len(docs), sum(map(len, docs)) / max(len(docs), 1))
+        return self._stats[role]
+
+    def _bm25(self, query: list[str], index: int, role: str, k1: float = 1.5, b: float = 0.75) -> float:
         doc = self.doc_tokens[index]
         freq = Counter(doc)
-        total = len(self.corpus)
+        df, total, avg_len = self._role_stats(role)
         score = 0.0
         for term in query:
             if term in freq:
-                idf = math.log(1 + (total - self.df[term] + 0.5) / (self.df[term] + 0.5))
-                score += idf * freq[term] * (k1 + 1) / (freq[term] + k1 * (1 - b + b * len(doc) / self.avg_len))
+                idf = math.log(1 + (total - df[term] + 0.5) / (df[term] + 0.5))
+                score += idf * freq[term] * (k1 + 1) / (freq[term] + k1 * (1 - b + b * len(doc) / avg_len))
         return score
 
     def search(self, query: str, role: str, k: int = 3) -> list[Retrieved]:
@@ -93,16 +103,16 @@ class Retriever:
             scored = [(float(sims[i]), i) for i in allowed]
         else:
             terms = tokens(query)
-            scored = [(self._bm25(terms, i), i) for i in allowed]
+            scored = [(self._bm25(terms, i, role), i) for i in allowed]
         scored = [item for item in scored if item[0] > 0]
         scored.sort(key=lambda item: -item[0])
         return [Retrieved(self.corpus[i], score) for score, i in scored[:k]]
 
-    def _idf(self, term: str) -> float:
-        total = len(self.corpus)
-        return math.log(1 + (total - self.df[term] + 0.5) / (self.df[term] + 0.5))
+    def _idf(self, term: str, role: str) -> float:
+        df, total, _ = self._role_stats(role)
+        return math.log(1 + (total - df[term] + 0.5) / (df[term] + 0.5))
 
-    def confidence(self, query: str, hits: list[Retrieved]) -> float:
+    def confidence(self, query: str, hits: list[Retrieved], role: str) -> float:
         """IDF-weighted share of the question's content words found in the retrieved text. Used to abstain.
 
         Weighting by rarity stops common words ("paid", "days", "year") from vouching for a question
@@ -112,4 +122,4 @@ class Retriever:
         if not terms or not hits:
             return 0.0
         found = set().union(*(set(tokens(f"{h.chunk.title} {h.chunk.section} {h.chunk.text}")) for h in hits))
-        return sum(self._idf(t) for t in terms & found) / sum(self._idf(t) for t in terms)
+        return sum(self._idf(t, role) for t in terms & found) / sum(self._idf(t, role) for t in terms)

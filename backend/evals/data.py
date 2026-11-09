@@ -148,7 +148,7 @@ HOLDOUT_QA = [
     ("h-no-bereavement", "How many days of bereavement leave do I get?", [], []),
     ("h-no-referral", "How much is the employee referral reward?", [], []),
     ("h-no-commuter", "Is there a monthly public transit pass subsidy?", [], []),
-    ("h-no-severance", "How many weeks of notice must I give when resigning?", [], []),
+    ("h-no-resign-notice", "How many weeks of notice must I give when resigning?", [], []),
     ("h-no-volunteer", "How many paid volunteering days are there?", [], []),
     ("h-no-laptop", "Can I buy my old work laptop when it is replaced?", [], []),
     ("h-no-childcare", "Is there an on-site childcare centre?", [], []),

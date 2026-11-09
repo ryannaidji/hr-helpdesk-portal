@@ -162,7 +162,8 @@ class Workflow:
         message = state["message"]
         hits = self.retriever.search(message, actor.role)
         context_ids = [h.chunk.id for h in hits]
-        if self.retriever.confidence(message, hits) < MIN_CONFIDENCE:
+        too_weak = not self.retriever.uses_embeddings and self.retriever.confidence(message, hits, actor.role) < MIN_CONFIDENCE
+        if not hits or too_weak:
             score = score_message(message, self._context(state["actor"], low_confidence=True))
             return {"answer": ABSTAIN, "abstained": True, "context_ids": context_ids, "score": score}
         if self.llm is None:

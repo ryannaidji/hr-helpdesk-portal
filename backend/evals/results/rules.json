@@ -7,7 +7,7 @@
     "python": "3.11.5",
     "data": "synthetic policies and employees, hand-written eval sets",
     "date": "2026-11-09",
-    "seconds": 21.5
+    "seconds": 17.7
   },
   "authorization": {
     "rest_matrix": {
@@ -140,42 +140,39 @@
   "answers": {
     "n_answerable": 33,
     "n_unanswerable": 8,
-    "fact_accuracy": 0.909,
-    "citation_hit_rate": 0.909,
-    "citation_precision": 0.909,
-    "groundedness": 0.909,
-    "false_abstention_rate": 0.091,
-    "correct_abstention_rate": 1.0,
+    "fact_accuracy": 0.97,
+    "citation_hit_rate": 0.97,
+    "citation_precision": 0.97,
+    "groundedness": 0.97,
+    "false_abstention_rate": 0.03,
+    "correct_abstention_rate": 0.875,
     "extractive_fallback_rate": 0.0,
     "invalid_citations_before_filter": 0,
-    "raw_citations": 30,
+    "raw_citations": 32,
     "misses": [
-      {
-        "id": "max-request",
-        "why": "route=policy abstained=True"
-      },
-      {
-        "id": "mileage",
-        "why": "route=policy abstained=True"
-      },
       {
         "id": "gift-limit",
         "why": "route=policy abstained=True"
+      },
+      {
+        "id": "no-pets",
+        "why": "answered an unanswerable question",
+        "answer": "Premium economy is allowed on flights of 8 hours or longer. [expenses#air-travel]"
       }
     ]
   },
   "answers_holdout": {
     "n_answerable": 12,
     "n_unanswerable": 12,
-    "fact_accuracy": 0.083,
-    "citation_hit_rate": 0.083,
-    "citation_precision": 0.083,
-    "groundedness": 0.167,
-    "false_abstention_rate": 0.833,
+    "fact_accuracy": 0.167,
+    "citation_hit_rate": 0.167,
+    "citation_precision": 0.167,
+    "groundedness": 0.25,
+    "false_abstention_rate": 0.75,
     "correct_abstention_rate": 1.0,
     "extractive_fallback_rate": 0.0,
     "invalid_citations_before_filter": 0,
-    "raw_citations": 2,
+    "raw_citations": 3,
     "misses": [
       {
         "id": "h-vacation",
@@ -200,10 +197,6 @@
       },
       {
         "id": "h-dinner",
-        "why": "route=policy abstained=True"
-      },
-      {
-        "id": "h-driving",
         "why": "route=policy abstained=True"
       },
       {
