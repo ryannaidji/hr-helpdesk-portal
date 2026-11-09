@@ -3,3 +3,6 @@ line-length = 150
 [lint]
 select = ["E", "F", "I", "B"]
 ignore = ["B008"]
+
+[lint.per-file-ignores]
+"evals/run_eval.py" = ["B023"]

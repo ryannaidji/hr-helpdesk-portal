@@ -1,0 +1,9 @@
+{
+  "authorization.rest_matrix.leak_rate": {"max": 0},
+  "authorization.rest_matrix.overblock_rate": {"max": 0},
+  "authorization.rest_matrix.audit_coverage": {"min": 1},
+  "authorization.chat_attacks.leak_rate": {"max": 0},
+  "authorization.restricted_documents.leak_rate": {"max": 0},
+  "authorization.negative_control_rest.leak_rate": {"min": 0.5},
+  "authorization.negative_control_chat.leak_rate": {"min": 0.1}
+}

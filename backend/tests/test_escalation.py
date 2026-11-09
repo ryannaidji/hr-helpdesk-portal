@@ -56,3 +56,8 @@ def test_score_is_capped():
                                          (50, "high"), (69, "high"), (70, "critical"), (100, "critical")])
 def test_level_boundaries(score, level):
     assert level_for(score) == level
+
+
+def test_regression_gerund_self_harm_phrase_escalates():
+    # Found by the routing eval: the pattern originally matched only "hurt myself".
+    assert score_message("I feel like hurting myself").level == "critical"

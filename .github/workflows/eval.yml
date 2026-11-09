@@ -1,0 +1,61 @@
+name: eval-llm
+# LLM evaluation on free GitHub-hosted CPU runners. Commits the JSON results back to main.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        model: ["qwen2.5:1.5b", "qwen2.5:3b"]
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - run: pip install -r requirements.txt
+      - name: Install and start Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          (ollama serve > /tmp/ollama.log 2>&1 &)
+          for i in $(seq 1 30); do curl -s localhost:11434/api/tags && break; sleep 2; done
+          ollama pull ${{ matrix.model }}
+          ollama pull nomic-embed-text
+      - name: Run evaluation
+        run: |
+          name=$(echo "${{ matrix.model }}" | tr ':.' '-')
+          python -m evals.run_eval --mode ollama --model ${{ matrix.model }} \
+            --out evals/results/$name.json --thresholds evals/thresholds.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results-${{ strategy.job-index }}
+          path: backend/evals/results/qwen*.json
+
+  commit:
+    needs: eval
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: backend/evals/results
+          merge-multiple: true
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backend/evals/results
+          git diff --cached --quiet || git commit -m "Record LLM evaluation results from GitHub Actions"
+          git push
