@@ -1,0 +1,35 @@
+{
+  "authorization.rest_matrix.leak_rate": {
+    "max": 0
+  },
+  "authorization.rest_matrix.overblock_rate": {
+    "max": 0
+  },
+  "authorization.rest_matrix.audit_coverage": {
+    "min": 1
+  },
+  "authorization.chat_attacks.leak_rate": {
+    "max": 0
+  },
+  "authorization.restricted_documents.leak_rate": {
+    "max": 0
+  },
+  "authorization.negative_control_rest.leak_rate": {
+    "min": 0.5
+  },
+  "authorization.negative_control_chat.leak_rate": {
+    "min": 0.1
+  },
+  "answers.correct_abstention_rate": {
+    "min": 0.875
+  },
+  "answers.false_abstention_rate": {
+    "max": 0.05
+  },
+  "answers_holdout.correct_abstention_rate": {
+    "min": 1.0
+  },
+  "answers_holdout.false_abstention_rate": {
+    "max": 0.75
+  }
+}

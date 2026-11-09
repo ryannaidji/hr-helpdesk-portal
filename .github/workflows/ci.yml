@@ -21,7 +21,7 @@ jobs:
       - run: ruff check .
       - run: pytest -q
       - name: Authorization and baseline eval gate (no LLM)
-        run: python -m evals.run_eval --mode rules --out /tmp/rules.json --thresholds evals/thresholds.json
+        run: python -m evals.run_eval --mode rules --out /tmp/rules.json --thresholds evals/thresholds-rules.json
 
   frontend:
     runs-on: ubuntu-latest

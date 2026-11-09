@@ -145,3 +145,29 @@ def test_rule_router(message, route):
 
 def test_unknown_role_has_no_scopes():
     assert Actor("E1", "ceo").effective_scopes == frozenset()
+
+
+def test_common_words_do_not_vouch_for_a_missing_topic(workflow):
+    assert workflow.run(EMPLOYEE, "How long is the paid sabbatical after ten years?")["abstained"]
+
+
+def test_restricted_only_word_scores_like_an_unseen_word():
+    # Regression: corpus statistics once included restricted chunks, a membership oracle for employees.
+    retriever = Retriever(CORPUS)
+    score = {w: retriever.confidence(f"annual leave carryover {w}", retriever.search(f"annual leave carryover {w}", "employee"), "employee")
+             for w in ("zeppelin", "severance")}
+    assert score["zeppelin"] == score["severance"]
+
+
+def test_lexical_gate_is_not_applied_with_embeddings(db, hr):
+    llm = FakeLLM(answer="NOT_FOUND")
+    retriever = Retriever(CORPUS, embed=lambda texts: [[1.0, float(i + 1)] for i, _ in enumerate(texts)])
+    Workflow(db, hr, retriever, llm, today=TODAY).run(EMPLOYEE, "zeppelin quokka")
+    assert len(llm.prompts) == 1  # the model decides, not word overlap
+
+
+def test_confidence_weights_rare_terms_more_than_common_ones():
+    retriever = Retriever(CORPUS)
+    hits = retriever.search("paid sick days", "employee")
+    assert retriever.confidence("paid sick days", hits, "employee") > retriever.confidence("paid sick zeppelin", hits, "employee")
+    assert retriever.confidence("anything", [], "employee") == 0.0

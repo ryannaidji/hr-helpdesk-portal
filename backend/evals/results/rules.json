@@ -7,7 +7,7 @@
     "python": "3.11.5",
     "data": "synthetic policies and employees, hand-written eval sets",
     "date": "2026-11-09",
-    "seconds": 18.0
+    "seconds": 17.7
   },
   "authorization": {
     "rest_matrix": {
@@ -140,30 +140,80 @@
   "answers": {
     "n_answerable": 33,
     "n_unanswerable": 8,
-    "fact_accuracy": 1.0,
-    "citation_hit_rate": 1.0,
-    "citation_precision": 1.0,
-    "groundedness": 1.0,
-    "false_abstention_rate": 0.0,
-    "correct_abstention_rate": 0.625,
+    "fact_accuracy": 0.97,
+    "citation_hit_rate": 0.97,
+    "citation_precision": 0.97,
+    "groundedness": 0.97,
+    "false_abstention_rate": 0.03,
+    "correct_abstention_rate": 0.875,
     "extractive_fallback_rate": 0.0,
     "invalid_citations_before_filter": 0,
-    "raw_citations": 33,
+    "raw_citations": 32,
     "misses": [
       {
-        "id": "no-sabbatical",
-        "why": "answered an unanswerable question",
-        "answer": "Primary caregivers receive 16 weeks of fully paid parental leave after 6 months of service. [parental-leave#primary-caregiver]"
+        "id": "gift-limit",
+        "why": "route=policy abstained=True"
       },
       {
         "id": "no-pets",
         "why": "answered an unanswerable question",
         "answer": "Premium economy is allowed on flights of 8 hours or longer. [expenses#air-travel]"
+      }
+    ]
+  },
+  "answers_holdout": {
+    "n_answerable": 12,
+    "n_unanswerable": 12,
+    "fact_accuracy": 0.167,
+    "citation_hit_rate": 0.167,
+    "citation_precision": 0.167,
+    "groundedness": 0.25,
+    "false_abstention_rate": 0.75,
+    "correct_abstention_rate": 1.0,
+    "extractive_fallback_rate": 0.0,
+    "invalid_citations_before_filter": 0,
+    "raw_citations": 3,
+    "misses": [
+      {
+        "id": "h-vacation",
+        "why": "route=policy abstained=True"
       },
       {
-        "id": "no-jury",
-        "why": "answered an unanswerable question",
-        "answer": "Employees receive 12 paid sick days per calendar year. [sick-leave#entitlement]"
+        "id": "h-doctor-note",
+        "why": "route=policy abstained=True"
+      },
+      {
+        "id": "h-call-in",
+        "why": "route=policy abstained=True"
+      },
+      {
+        "id": "h-new-parent",
+        "why": "route=policy abstained=True"
+      },
+      {
+        "id": "h-wfh",
+        "why": "missing expected fact",
+        "answer": "Reports can be made to any HR partner or through the confidential ethics line, and HR acknowledges each report within 2 working days. [code-of-conduct#harassment-and-discrimination]"
+      },
+      {
+        "id": "h-dinner",
+        "why": "route=policy abstained=True"
+      },
+      {
+        "id": "h-401k",
+        "why": "route=policy abstained=True"
+      },
+      {
+        "id": "h-courses",
+        "why": "route=policy abstained=True"
+      },
+      {
+        "id": "h-supplier",
+        "why": "route=policy abstained=True"
+      },
+      {
+        "id": "h-side-job",
+        "why": "route=policy abstained=True"
       }
     ]
   }
