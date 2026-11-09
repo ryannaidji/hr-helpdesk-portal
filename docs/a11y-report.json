@@ -1,0 +1,50 @@
+{
+  "standard": "WCAG 2.1 A and AA (axe-core automated subset)",
+  "screens": 7,
+  "violations": 0,
+  "keyboard": {
+    "focus_moved_to": "BUTTON",
+    "outline": "solid"
+  },
+  "negative_control_detected": [
+    "color-contrast",
+    "image-alt"
+  ],
+  "results": [
+    {
+      "screen": "login",
+      "rules_passed": 11,
+      "violations": []
+    },
+    {
+      "screen": "login-error",
+      "rules_passed": 14,
+      "violations": []
+    },
+    {
+      "screen": "assistant-with-denied-and-escalated-replies",
+      "rules_passed": 20,
+      "violations": []
+    },
+    {
+      "screen": "my-leave",
+      "rules_passed": 18,
+      "violations": []
+    },
+    {
+      "screen": "approvals",
+      "rules_passed": 15,
+      "violations": []
+    },
+    {
+      "screen": "escalations",
+      "rules_passed": 13,
+      "violations": []
+    },
+    {
+      "screen": "audit-log",
+      "rules_passed": 15,
+      "violations": []
+    }
+  ]
+}
