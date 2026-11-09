@@ -1,0 +1,9 @@
+fastapi==0.115.0
+uvicorn==0.32.0
+httpx==0.28.1
+pydantic==2.10.0
+langgraph==1.2.20
+langchain-core==1.7.6
+numpy==2.4.6
+pytest==8.3.4
+ruff==0.8.4
