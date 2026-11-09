@@ -59,6 +59,11 @@ await open("My leave", "My leave");
 await scan("my-leave");
 await page.getByRole("button", { name: "Sign out" }).click();
 
+await signIn("E1003");
+await open("Approvals", "Awaiting your approval");
+await scan("approvals-manager");
+await page.getByRole("button", { name: "Sign out" }).click();
+
 await signIn("E1002");
 await open("Approvals", "Awaiting your approval");
 await scan("approvals");

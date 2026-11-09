@@ -16,6 +16,7 @@ export function Approvals({ api }: { api: ApiClient }) {
       {error && <p role="alert" className="error">{error}</p>}
       {data?.length === 0 && <p>Nothing is waiting for you.</p>}
       <table>
+        <thead><tr><th>Employee</th><th>Type</th><th>Dates</th><th>Length</th><th>Decision</th></tr></thead>
         <tbody>
           {data?.map((r) => (
             <tr key={r.id}>
