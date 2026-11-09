@@ -31,6 +31,7 @@ export function Chat({ api }: { api: ApiClient }) {
   return (
     <section>
       <h2>Ask HR</h2>
+      <div role="log" aria-live="polite" aria-label="Conversation">
       {turns.map(({ question, reply }) => (
         <article className="card" key={reply.trace_id}>
           <p className="question">{question}</p>
@@ -45,6 +46,7 @@ export function Chat({ api }: { api: ApiClient }) {
           )}
         </article>
       ))}
+      </div>
       {error && <p role="alert" className="error">{error}</p>}
       <form className="row" onSubmit={send}>
         <input aria-label="Message" value={message} maxLength={2000} placeholder="Ask about a policy or your leave"

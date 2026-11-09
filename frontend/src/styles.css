@@ -4,6 +4,7 @@ body { margin: 0; }
 header, .row { display: flex; gap: 12px; align-items: center; }
 .spacer { flex: 1; }
 nav { display: flex; gap: 4px; flex-wrap: wrap; margin: 12px 0; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #0b57d0; outline-offset: 2px; }
 button { padding: 6px 12px; border: 1px solid #b8c2cf; border-radius: 6px; background: #fff; cursor: pointer; }
 button.active, button[type="submit"] { background: #1f5fa8; color: #fff; }
 .card { background: #fff; border: 1px solid #dde3ea; border-radius: 8px; padding: 12px; margin: 8px 0; }

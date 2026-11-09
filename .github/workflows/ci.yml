@@ -65,7 +65,13 @@ jobs:
           for i in $(seq 1 30); do curl -s localhost:8000/health && break; sleep 1; done
       - run: node e2e/screenshot.mjs ../docs/demo.png
         working-directory: frontend
+      - name: WCAG 2.1 A/AA automated checks (axe-core)
+        run: node e2e/a11y.mjs ../docs/a11y-report.json
+        working-directory: frontend
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: demo-screenshot
-          path: docs/demo.png
+          path: |
+            docs/demo.png
+            docs/a11y-report.json

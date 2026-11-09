@@ -48,6 +48,12 @@ describe("Chat", () => {
     expect(screen.getByText(/score 60 \(high\)/)).toBeInTheDocument();
   });
 
+  it("announces replies to assistive technology", async () => {
+    await ask({ chat: vi.fn().mockResolvedValue(reply({})) });
+    expect(screen.getByRole("log")).toHaveAttribute("aria-live", "polite");
+    expect(await screen.findByText("Five days.")).toBeInTheDocument();
+  });
+
   it("shows API errors", async () => {
     await ask({ chat: vi.fn().mockRejectedValue(new Error("offline")) });
     expect(await screen.findByRole("alert")).toHaveTextContent("offline");

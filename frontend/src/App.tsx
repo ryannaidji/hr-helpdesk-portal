@@ -37,7 +37,7 @@ export function App() {
       </header>
       <nav aria-label="Sections">
         {tabsFor(user.role).map((name) => (
-          <button key={name} className={name === tab ? "active" : ""} onClick={() => setTab(name)}>{name}</button>
+          <button key={name} className={name === tab ? "active" : ""} aria-current={name === tab ? "page" : undefined} onClick={() => setTab(name)}>{name}</button>
         ))}
       </nav>
       <main>
