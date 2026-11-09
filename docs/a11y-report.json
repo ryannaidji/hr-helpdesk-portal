@@ -1,6 +1,6 @@
 {
   "standard": "WCAG 2.1 A and AA (axe-core automated subset)",
-  "screens": 7,
+  "screens": 8,
   "violations": 0,
   "keyboard": {
     "focus_moved_to": "BUTTON",
@@ -29,6 +29,11 @@
     {
       "screen": "my-leave",
       "rules_passed": 18,
+      "violations": []
+    },
+    {
+      "screen": "approvals-manager",
+      "rules_passed": 15,
       "violations": []
     },
     {
